@@ -7,10 +7,20 @@ Problema 1
 
 - @author Santiago Rodriguez Mora - 202110332
 - @author Valeria Torres Gomez - 202110363
+
+//! Descripción de la solución:
+  Dado k, n y pesos p0,p1,p2,p3,p4 para columnas,
+  encontrar el puntaje de creatividad máximo al repartir n en k celdas.
+  Puntúan solo dígitos 3/6/9: en la columna p, 3->1*P[p], 6->2*P[p], 9->3*P[p].
+  Se resuelve con DP por columnas en base 10.
+//* Entrada:
+  T casos -> para cada caso: k n p0 p1 p2 p3 p4
+//* Salida:
+  Una línea -> por caso con el máximo puntaje
  */
 
 
-public class ProyectoDalgoP1 {
+public class ProblemaP1 {
 
     private static final long PUNTAJE_MINIMO = Long.MIN_VALUE / 4;
 
@@ -46,7 +56,7 @@ public class ProyectoDalgoP1 {
         long minutos = transcurridoMs / 60_000;
         long segundos = (transcurridoMs % 60_000) / 1_000;
         long milis = transcurridoMs % 1_000;
-        System.err.printf("[Tiempo total] %02d:%02d.%03d (mm:ss.mmm)%n", minutos, segundos, milis);
+        System.err.printf("tiempo: %02d:%02d.%03d (mm:ss.mmm)%n", minutos, segundos, milis);
     }
 
 
