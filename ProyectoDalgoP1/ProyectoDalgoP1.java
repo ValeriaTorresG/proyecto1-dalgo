@@ -5,9 +5,11 @@ import java.util.*;
 Diseno y Analisis de Algoritmos 2025-20
 Problema 1
 
-- Santiago Rodriguez Mora - 202110332
-- Valeria Torres Gomez - 202110363
+- @author Santiago Rodriguez Mora - 202110332
+- @author Valeria Torres Gomez - 202110363
  */
+
+
 public class ProyectoDalgoP1 {
 
     private static final long PUNTAJE_MINIMO = Long.MIN_VALUE / 4;
@@ -47,7 +49,30 @@ public class ProyectoDalgoP1 {
         System.err.printf("[Tiempo total] %02d:%02d.%03d (mm:ss.mmm)%n", minutos, segundos, milis);
     }
 
+
+    private static long solveKEquals1(int n, int[] pesos) {
+        long ans = 0;
+        int p = 0;
+        int x = n;
+        while (p < 5 || x > 0) {
+            int d = x % 10;
+            int peso = (p < 5 ? pesos[p] : 0);
+            if (d == 3) ans += peso;
+            else if (d == 6) ans += 2L * peso;
+            else if (d == 9) ans += 3L * peso;
+            x /= 10;
+            p++;
+        }
+        return ans;
+    }
+
+
     private static long resolverCaso(int k, int n, int[] pesos) {
+
+        if (k == 1) {
+        return solveKEquals1(n, pesos);
+        }
+
         int[] digitos = digitosDecimales(n);
         int ultimaColumna = Math.max(digitos.length, 5);
         int nuevePorK = 9 * k;
@@ -76,6 +101,7 @@ public class ProyectoDalgoP1 {
         long respuesta = dpSiguiente[0];
         return Math.max(respuesta, 0);
     }
+
 
     private static long[] construirDpColumna(
             int nuevePorK,
@@ -148,7 +174,7 @@ public class ProyectoDalgoP1 {
                 if (mejor == PUNTAJE_MINIMO) {
                     dp[acarreoEntrante] = PUNTAJE_MINIMO;
                 } else {
-                    long resta = (long) pesoColumna * (acarreoEntrante / 3);
+                    long resta = (long) pesoColumna * ((acarreoEntrante - residuo) / 3);
                     dp[acarreoEntrante] = mejor - resta;
                 }
             }
@@ -156,18 +182,22 @@ public class ProyectoDalgoP1 {
         return dp;
     }
 
+
     private static int limiteAcarreosColumna(int columna, int nuevePorK, int limiteGlobal) {
         int estimado = (columna * nuevePorK) / 10 + 2;
         return Math.min(limiteGlobal, estimado);
     }
 
+
     private static int limiteAcarreosGlobal(int nuevePorK) {
         return nuevePorK / 10 + 2;
     }
 
+
     private static int ceilDiv(int valor, int divisor) {
         return -Math.floorDiv(-valor, divisor);
     }
+
 
     private static int[] digitosDecimales(int numero) {
         if (numero == 0) {
@@ -183,6 +213,7 @@ public class ProyectoDalgoP1 {
         }
         return Arrays.copyOf(buffer, tam);
     }
+
 
     private static class FastReader {
         private final InputStream input;
