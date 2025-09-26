@@ -24,6 +24,13 @@ public class ProblemaP1 {
 
     private static final long PUNTAJE_MINIMO = Long.MIN_VALUE / 4;
 
+    /**
+     * Punto de entrada del programa. Lee la entrada estándar, resuelve cada caso de prueba
+     * con programación dinámica y escribe los puntajes máximos en la salida estándar.
+     *
+     * @param args argumentos de consola (no se utilizan).
+     * @throws Exception si ocurre un error inesperado de lectura.
+     */
     public static void main(String[] args) throws Exception {
         FastReader lector = new FastReader(System.in);
         StringBuilder salida = new StringBuilder();
@@ -60,6 +67,15 @@ public class ProblemaP1 {
     }
 
 
+    /**
+     * Calcula directamente el puntaje máximo cuando solo hay una celda disponible.
+     * Basta con evaluar el propio número n y sumar los aportes de los dígitos 3, 6 y 9
+     * según su posición.
+     *
+     * @param n     energía total que se asigna al único número.
+     * @param pesos arreglo con los pesos de cada columna decimal.
+     * @return puntaje de creatividad de n considerando los pesos.
+     */
     private static long solveKEquals1(int n, int[] pesos) {
         long ans = 0;
         int p = 0;
@@ -77,6 +93,16 @@ public class ProblemaP1 {
     }
 
 
+    /**
+     * Resuelve un caso general con k celdas aplicando programación dinámica por columnas.
+     * Divide n en base 10 y procesa de la columna más significativa a la menos significativa,
+     * evaluando todas las combinaciones de acarreos posibles.
+     *
+     * @param k     cantidad de celdas a rellenar.
+     * @param n     suma total que deben alcanzar los números.
+     * @param pesos pesos de creatividad para las primeras cinco columnas.
+     * @return puntaje máximo alcanzable.
+     */
     private static long resolverCaso(int k, int n, int[] pesos) {
 
         if (k == 1) {
@@ -113,6 +139,19 @@ public class ProblemaP1 {
     }
 
 
+    /**
+     * Construye la tabla dp de una columna determinada considerando todos los acarreos
+     * entrantes posibles. Usa un enfoque por residuos (mod 3) y ventanas deslizantes para
+     * encontrar el mejor acarreo saliente de forma eficiente.
+     *
+     * @param nuevePorK       valor precomputado de 9 * k para limitar las sumas por columna.
+     * @param digitoObjetivo  dígito que debe obtenerse en la columna después de ajustar acarreos.
+     * @param pesoColumna     peso de creatividad asociado a la columna actual.
+     * @param dpSiguiente     resultados óptimos de columnas más significativas.
+     * @param limiteSiguiente máximo acarreo permitido hacia columnas siguientes.
+     * @param limiteActual    máximo acarreo que puede llegar a la columna actual.
+     * @return arreglo con el mejor puntaje para cada acarreo entrante permitido.
+     */
     private static long[] construirDpColumna(
             int nuevePorK,
             int digitoObjetivo,
@@ -193,22 +232,50 @@ public class ProblemaP1 {
     }
 
 
+    /**
+     * Estima el máximo número de acarreos que puede recibir una columna concreta y lo acota
+     * por el límite global permitido para todo el problema.
+     *
+     * @param columna      índice de la columna decimal (0 = unidades).
+     * @param nuevePorK    valor precomputado de 9 * k.
+     * @param limiteGlobal cota global de acarreos válida para cualquier columna.
+     * @return límite de acarreos para la columna consultada.
+     */
     private static int limiteAcarreosColumna(int columna, int nuevePorK, int limiteGlobal) {
         int estimado = (columna * nuevePorK) / 10 + 2;
         return Math.min(limiteGlobal, estimado);
     }
 
 
+    /**
+     * Calcula una cota global de los acarreos que pueden aparecer en cualquier columna.
+     *
+     * @param nuevePorK valor precomputado de 9 * k.
+     * @return límite global para los acarreos.
+     */
     private static int limiteAcarreosGlobal(int nuevePorK) {
         return nuevePorK / 10 + 2;
     }
 
 
+    /**
+     * Calcula la división entera hacia arriba sin perder exactitud para valores negativos.
+     *
+     * @param valor    numerador de la división.
+     * @param divisor  divisor positivo utilizado para la división.
+     * @return resultado de ceil(valor / divisor).
+     */
     private static int ceilDiv(int valor, int divisor) {
         return -Math.floorDiv(-valor, divisor);
     }
 
 
+    /**
+     * Descompone un número en sus dígitos en base 10, desde unidades hacia arriba.
+     *
+     * @param numero valor a descomponer.
+     * @return arreglo con los dígitos del número (posición 0 = unidades).
+     */
     private static int[] digitosDecimales(int numero) {
         if (numero == 0) {
             return new int[]{0};
@@ -225,16 +292,31 @@ public class ProblemaP1 {
     }
 
 
+    /**
+     * Lector rápido para la entrada estándar basado en un búfer interno. Permite leer enteros
+     * sin crear objetos adicionales y minimiza llamadas al sistema.
+     */
     private static class FastReader {
         private final InputStream input;
         private final byte[] buffer = new byte[1 << 16];
         private int indice = 0;
         private int longitud = 0;
 
+        /**
+         * Crea un lector rápido sobre el flujo suministrado.
+         *
+         * @param input flujo de entrada a envolver.
+         */
         FastReader(InputStream input) {
             this.input = input;
         }
 
+        /**
+         * Lee el siguiente byte del búfer, rellenándolo desde el flujo cuando sea necesario.
+         *
+         * @return siguiente byte como entero sin signo, o -1 si se alcanza el fin del flujo.
+         * @throws IOException si ocurre un error de lectura.
+         */
         private int read() throws IOException {
             if (indice >= longitud) {
                 longitud = input.read(buffer);
@@ -246,6 +328,12 @@ public class ProblemaP1 {
             return buffer[indice++];
         }
 
+        /**
+         * Lee el siguiente entero (con signo) de la entrada omitiendo espacios en blanco.
+         *
+         * @return entero leído del flujo.
+         * @throws IOException si ocurre un problema de lectura.
+         */
         int nextInt() throws IOException {
             int c;
             int signo = 1;
